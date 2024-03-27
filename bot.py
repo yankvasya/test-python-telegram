@@ -1,8 +1,14 @@
 import logging
 import random
+import os
 
 from telegram import Update,ReplyKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
+from dotenv import load_dotenv
+
+load_dotenv()
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 reply_keyboard = [["🟥", "⬛️"]]
 
@@ -24,7 +30,6 @@ async def start(update: Update,ContextTypes) -> None:
             reply_keyboard, one_time_keyboard=True, input_field_placeholder="What is color card?"
         ),
     )
-
 
 
 async def take_random_card():
@@ -55,7 +60,7 @@ async def random_card(update: Update,ContextTypes) -> None:
 
 def main() -> None:
     """Start the bot."""
-    application = Application.builder().token("7167409761:AAGZ-gigq4_B-NVT730GS2tOPOHzGKxt6H8").build()
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, random_card))
     application.run_polling(allowed_updates=Update.ALL_TYPES)
